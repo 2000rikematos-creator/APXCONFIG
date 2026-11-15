@@ -46,8 +46,7 @@ const char *opcoes[QUANT_LINGUAS] = { "PT", "ENG", "Quit" };
         } 
 
         else if (c == 13) {
-           
-            break;
+           return currentSelection;
         }
     }
 }
@@ -59,7 +58,7 @@ int main(void) {
     SetConsoleCP(65001);
     char language[10] = "";
 
-   menu("Welcome to APX, please select the language",opcoes,QUANT_LINGUAS);
+   int selectLanguage = menu("Welcome to APX, please select the language",opcoes,QUANT_LINGUAS);
     currentSelection == 0 ? strcpy(language,"PT") : strcpy(language,"ENG");
     currentSelection = 0; 
     system("cls");
@@ -81,7 +80,7 @@ const char *colors[QUANT_COLORS] = {
 
  const char *rims[QUANT_RIMS] = {
     strcmp(language, "ENG") == 0 ? "Default" : "Origem",
-    strcmp(language, "ENG") == 0 ? "Launch Edition (Limited) +700€" : "Launch Edition (Limitadas) +700€",
+    strcmp(language, "ENG") == 0 ? "Launch Edition (Limited) +700€" : "Edição de lançamento (Limitadas) +700€",
     strcmp(language, "ENG") == 0 ? "Japan Racing +1000€" : "Japan Racing +1000€"
 };
 const char *windows[QUANT_WINDOWS] = {
@@ -106,7 +105,7 @@ const char *windows[QUANT_WINDOWS] = {
    
     while(1){
     system("cls");
-    menu((language,"ENG") == 0 ? "Select the model":"Seleciona o modelo",modelos,QUANT_MODELOS);
+   int selectModel = menu(strcmp(language,"ENG") == 0 ? "Select the model":"Seleciona o modelo",modelos,QUANT_MODELOS);
     if(currentSelection == 1){
         system("cls");
         printf(strcmp(language,"ENG") == 0 ? "Stay tuned for updates soon\n":"Fica atento para novidades em breve\n");
@@ -124,24 +123,24 @@ const char *windows[QUANT_WINDOWS] = {
 
     while(1){
         system("cls");
-        menu(strcmp(language,"ENG") == 0 ? "Okay let's start with the exterior":"Okay vamos começar pelo exterior",exterior,QUANT_OPT_EXTERIOR); 
+       int selectExteriorOption = menu(strcmp(language,"ENG") == 0 ? "Okay let's start with the exterior":"Okay vamos começar pelo exterior",exterior,QUANT_OPT_EXTERIOR); 
         system("cls");
         switch (currentSelection)
     {
     case 0:       
-        menu(strcmp(language,"ENG") == 0 ? "Color Selection":"Escolha da cor",colors,QUANT_COLORS);
+       int selectColor = menu(strcmp(language,"ENG") == 0 ? "Color Selection":"Escolha da cor",colors,QUANT_COLORS);
         strcpy(newCar.color,colors[currentSelection]);
         currentSelection = 0;
         break;
     case 1:
         currentSelection = 0;
-        menu(strcmp(language,"ENG") == 0 ? "Rim Selection":"Escolha as jantes",rims,QUANT_RIMS);
+        int selectRim = menu(strcmp(language,"ENG") == 0 ? "Rim Selection":"Escolha as jantes",rims,QUANT_RIMS);
         strcpy(newCar.rims,rims[currentSelection]);
         currentSelection = 1;
         break;
     case 2:
         currentSelection = 0;
-       menu(strcmp(language,"ENG") == 0 ? "Window Selection":"Escolha as janelas",windows,QUANT_WINDOWS);
+       int selectWindows = menu(strcmp(language,"ENG") == 0 ? "Window Selection":"Escolha as janelas",windows,QUANT_WINDOWS);
         strcpy(newCar.windows,windows[currentSelection]);
         currentSelection = 2;
         break;
@@ -169,9 +168,6 @@ const char *windows[QUANT_WINDOWS] = {
 
     c = _getch();
    
-
-
-    
 
     return 0;
 }
