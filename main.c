@@ -13,7 +13,7 @@
 
 typedef struct{
         int id;
-        const char *option;
+       const char *option;
     }Option;
 
  typedef struct{
@@ -21,18 +21,58 @@ typedef struct{
         Option color;
         Option rims;
         Option windows;
+        int price;
     }Car;   
-
-    typedef struct{
-        int id;
-        int quantity;
-        float preco;
-    }StockItem;
-
 
     Option langs[QUANT_LANGS] = { {1,"PT"}, {2,"ENG"}, {3,"Quit"}};
 
+    //stock de cores
+    //id, quantidade, preço, prazo
+
+    int colorStock[4][4] = {
+        {1,2,0,10},     //Black hawk
+        {2,2,0,10},     //Atlantic blue
+        {3,2,0,10},     //Polar white
+        {4,0,1000,10}   //Apex green
+    };
+    //stock de jantes
+    int rimStock[3][4] = {
+        {1,2,0,25},  //Default
+        {2,2,0,25},  //Launch edition    
+        {3,2,700,25}  //japan racing
+    };
+        //stock de janelas
+    int windowStock[2][4] = {
+        {1,2,0,30},    //Regular
+        {2,2,500,30}  //Tinted
+    };   
+
      int currentSelection = 0;
+
+
+     int checkStock(Car car){
+        
+        int deliveryTime = 10;
+        int finalPrice = car.price;
+
+        //Matriz do stock
+        //id 0, quantidade 1, preço 2, prazo 3
+
+        if(colorStock[car.color.id-1][1] < 1){deliveryTime = deliveryTime + colorStock[car.color.id-1][3];};
+        finalPrice = finalPrice + colorStock[car.color.id-1][2];
+
+        if(rimStock[car.rims.id-1][1] < 1){deliveryTime = deliveryTime + colorStock[car.rims.id-1][3];}
+        finalPrice = finalPrice + rimStock[car.rims.id-1][2];
+
+        if(windowStock[car.windows.id-1][1] < 1){deliveryTime = deliveryTime + colorStock[car.windows.id-1][3];}
+        finalPrice = finalPrice + windowStock[car.windows.id-1][2];
+
+
+        printf("delivery time is %d days\n ",deliveryTime);
+        printf("price is %d$\n",finalPrice);
+
+        _getch();
+     }
 
   int menu(const char *title, Option options[], int quantOptions){
    
@@ -66,37 +106,20 @@ typedef struct{
 int main(void) {
     Car newCar = {0};
 
-    StockItem colorStock[4] = {
-        {1, 2, 0.0},
-        {2, 2,0.0},
-        {3,2,0.0},
-        {4,2,0.0}};
-    
-    StockItem rimStock[3] = {
-        {1,2,0.0},
-        {2,2,0.0},
-        {3,2,0.0}};
-        
-    StockItem windowStock[2] = {
-        {1,2,0.0},
-        {2,2,0.0}};   
-
-
-
     SetConsoleOutputCP(65001);
     SetConsoleCP(65001);
 
-    char language[50] = "";
+    bool isEng = true;
 
    int selectLanguage = menu("Welcome to APX, please select the language",langs,QUANT_LANGS);
    
    switch (selectLanguage)
    {
    case 0:
-    strcpy(language,"PT");
+    isEng = false;
     break;
    case 1: 
-   strcpy(language,"ENG");
+   isEng = true;
    break;
    case 2:
    return 0;
@@ -105,40 +128,41 @@ int main(void) {
     break;
    }
    
+
     currentSelection = 0; 
     system("cls");
 
-    Option modelos[QUANT_MODELOS] = {{1,"Classe A"},{2,strcmp(language,"ENG") == 0?"In development":"Em desenvolvimento"}};
+    Option modelos[QUANT_MODELOS] = {{1,"Classe A"},{2, isEng ?"In development":"Em desenvolvimento"}};
     
     Option exterior[QUANT_OPT_EXTERIOR] = {
-    {1,strcmp(language, "ENG") == 0 ? "Color" : "Cor"},
-    {2,strcmp(language, "ENG") == 0 ? "Rims" : "Jantes"},
-    {3,strcmp(language, "ENG") == 0 ? "Windows" : "Janelas"},
-    {4,strcmp(language,"ENG") == 0 ? "Next" : "Próximo"}
+    {1,isEng ? "Color" : "Cor"},
+    {2,isEng ? "Rims" : "Jantes"},
+    {3,isEng ? "Windows" : "Janelas"},
+    {4,isEng ? "Next" : "Próximo"}
 };
     Option colors[QUANT_COLORS] = {
-    {1,strcmp(language, "ENG") == 0 ? "Black hawk" : "Falcão negro"},
-    {2,strcmp(language, "ENG") == 0 ? "Atlantic blue" : "Azul atlântico"},
-    {3,strcmp(language, "ENG") == 0 ? "Polar white" : "Branco polar"},
-    {4,strcmp(language,"ENG") == 0 ? "Apex green (Limited)" : "Verde predador (Limitada)"}
+    {1,isEng ? "Black hawk" : "Falcão negro"},
+    {2,isEng ? "Atlantic blue" : "Azul atlântico"},
+    {3,isEng ? "Polar white" : "Branco polar"},
+    {4,isEng ? "Apex green (Limited)" : "Verde predador (Limitada)"}
 };
 
  Option rims[QUANT_RIMS] = {
-    {1,strcmp(language, "ENG") == 0 ? "Default" : "Origem"},
-    {2,strcmp(language, "ENG") == 0 ? "Launch Edition (Limited) +700€" : "Edição de lançamento (Limitadas) +700€"},
-    {3,strcmp(language, "ENG") == 0 ? "Japan Racing +1000€" : "Japan Racing +1000€"}
+    {1,isEng ? "Default" : "Origem"},
+    {2,isEng ? "Launch Edition (Limited) +700€" : "Edição de lançamento (Limitadas) +700€"},
+    {3,isEng ? "Japan Racing +1000€" : "Japan Racing +1000€"}
 };
     Option windows[QUANT_WINDOWS] = {
-    {1,strcmp(language, "ENG") == 0 ? "Regular" : "Normais"},
-    {2,strcmp(language, "ENG") == 0 ? "Tinted" : "Escurecidas"}
+    {1,isEng ? "Regular" : "Normais"},
+    {2,isEng ? "Tinted" : "Escurecidas"}
 };
 
 
- if (strcmp(language,"ENG") == 0){
+ if (isEng){
         printf("Welcome to the configurator!\n");
         printf("Press any key to continue...\n");
        
-    }else if (strcmp(language,"PT") == 0){
+    }else{
         printf("Bem vindo ao configurador\n");
         printf("Prime qualquer tecla para continuar...\n");
 
@@ -148,47 +172,47 @@ int main(void) {
    
     while(1){
     system("cls");
-   int selectModel = menu(strcmp(language,"ENG") == 0 ? "Select the model":"Seleciona o modelo",modelos,QUANT_MODELOS);
+   int selectModel = menu(isEng ? "Select the model":"Seleciona o modelo",modelos,QUANT_MODELOS);
     if(currentSelection == 1){
         system("cls");
-        printf(strcmp(language,"ENG") == 0 ? "Stay tuned for updates soon\n":"Fica atento para novidades em breve\n");
-        printf(strcmp(language,"ENG") == 0 ? "Press any key to go back\n":"Prime qualquer tecla para voltar atrás\n");
+        printf(isEng ? "Stay tuned for updates soon\n":"Fica atento para novidades em breve\n");
+        printf(isEng ? "Press any key to go back\n":"Prime qualquer tecla para voltar atrás\n");
         int c = _getch();
     }else{
     strcpy(newCar.model, modelos[currentSelection].option);
+    newCar.price = 40000;
     currentSelection = 0;
     system("cls");
     break;
     }
-   
     }
    
-
     while(1){
         system("cls");
-       int selectExteriorOption = menu(strcmp(language,"ENG") == 0 ? "Okay let's start with the exterior":"Okay vamos começar pelo exterior",exterior,QUANT_OPT_EXTERIOR); 
+       int selectExteriorOption = menu(isEng ? "Okay let's start with the exterior":"Okay vamos começar pelo exterior",exterior,QUANT_OPT_EXTERIOR); 
         system("cls");
         switch (currentSelection)
     {
     case 0:       
-       int selectColor = menu(strcmp(language,"ENG") == 0 ? "Color Selection":"Escolha da cor",colors,QUANT_COLORS);
+       int selectColor = menu(isEng ? "Color Selection":"Escolha da cor",colors,QUANT_COLORS);
         newCar.color = colors[currentSelection];
         currentSelection = 0;
         break;
     case 1:
         currentSelection = 0;
-        int selectRim = menu(strcmp(language,"ENG") == 0 ? "Rim Selection":"Escolha as jantes",rims,QUANT_RIMS);
+        int selectRim = menu(isEng ? "Rim Selection":"Escolha as jantes",rims,QUANT_RIMS);
         newCar.rims = rims[currentSelection];
         currentSelection = 1;
         break;
     case 2:
         currentSelection = 0;
-       int selectWindows = menu(strcmp(language,"ENG") == 0 ? "Window Selection":"Escolha as janelas",windows,QUANT_WINDOWS);
+       int selectWindows = menu(isEng ? "Window Selection":"Escolha as janelas",windows,QUANT_WINDOWS);
        newCar.windows = windows[currentSelection];
        currentSelection = 2;
         break;
 
         case 3:
+
         break;
     
     default:
@@ -196,17 +220,25 @@ int main(void) {
     }
 
     if(currentSelection == 3){
-        break;
+
+        if(newCar.color.id == 0 || newCar.rims.id == 0 || newCar.windows.id == 0){
+            printf("%s\n", isEng ? "Please complete the configuration before proceeding" : "Por favor complete a configuração antes de prosseguir");
+            _getch();
+        }else{
+            break;
+        }
+            
     }
     }
 
     system("cls");
 
-    printf("%s %s %d\n", strcmp(language,"ENG") == 0 ? "Model:":"Modelo:", newCar.model, 1);
-    printf("%s %s %d\n",strcmp(language,"ENG") == 0 ? "Color:":"Cor:",newCar.color.option, newCar.color.id);
-    printf("%s %s %d\n",strcmp(language,"ENG") == 0 ? "Rims:":"Jantes:",newCar.rims.option, newCar.rims.id);
-    printf("%s %s %d\n",strcmp(language,"ENG") == 0 ? "Windows:":"Janelas:",newCar.windows.option, newCar.windows.id);
+    printf("%s %s\n",isEng ? "Model:":"Modelo:", newCar.model);
+    printf("%s %s\n",isEng ? "Color:":"Cor:",newCar.color.option);
+    printf("%s %s\n",isEng ? "Rims:":"Jantes:",newCar.rims.option);
+    printf("%s %s\n",isEng ? "Windows:":"Janelas:",newCar.windows.option);
 
+    checkStock(newCar);
      _getch();
    
 
