@@ -10,25 +10,39 @@
 #define QUANT_RIMS 3
 #define QUANT_COLORS 4
 #define QUANT_WINDOWS 2
+#define QUANT_OPT_INTERIOR 4 
+#define QUANT_SEATS 3
+#define QUANT_RADIO 3
+#define QUANT_DASHBOARD 2
+#define QUANT_OPT_EXTRAS 3
+#define QUANT_KIT 2
+#define QUANT_MOTOR 3
+
 
 typedef struct{
         int id;
        const char *option;
     }Option;
 
+// Define a estrutura Car para armazenar as informações do carro configurado
  typedef struct{
         char model[50];
         Option color;
         Option rims;
         Option windows;
+        Option seats;
+        Option radio;
+        Option dashboard;
+        Option kit;
+        Option motor;
         int price;
     }Car;   
 
     Option langs[QUANT_LANGS] = { {1,"PT"}, {2,"ENG"}, {3,"Quit"}};
 
+     int currentSelection = 0;
     //stock de cores
     //id, quantidade, preço, prazo
-
     int colorStock[4][4] = {
         {1,2,0,10},     //Black hawk
         {2,2,0,10},     //Atlantic blue
@@ -47,7 +61,7 @@ typedef struct{
         {2,2,500,30}  //Tinted
     };   
 
-     int currentSelection = 0;
+     
 
 
      int checkStock(Car car){
@@ -71,7 +85,7 @@ typedef struct{
         printf("delivery time is %d days\n ",deliveryTime);
         printf("price is %d$\n",finalPrice);
 
-        _getch();
+        
      }
 
   int menu(const char *title, Option options[], int quantOptions){
@@ -104,6 +118,7 @@ typedef struct{
 
 
 int main(void) {
+   
     Car newCar = {0};
 
     SetConsoleOutputCP(65001);
@@ -147,7 +162,7 @@ int main(void) {
     {4,isEng ? "Apex green (Limited)" : "Verde predador (Limitada)"}
 };
 
- Option rims[QUANT_RIMS] = {
+    Option rims[QUANT_RIMS] = {
     {1,isEng ? "Default" : "Origem"},
     {2,isEng ? "Launch Edition (Limited) +700€" : "Edição de lançamento (Limitadas) +700€"},
     {3,isEng ? "Japan Racing +1000€" : "Japan Racing +1000€"}
@@ -155,6 +170,47 @@ int main(void) {
     Option windows[QUANT_WINDOWS] = {
     {1,isEng ? "Regular" : "Normais"},
     {2,isEng ? "Tinted" : "Escurecidas"}
+};
+
+    Option interior[QUANT_OPT_INTERIOR] = {
+    {1,isEng ? "Seats" : "Bancos"},
+   {2,isEng ? "Radio" : "Rádio"},
+    {3,isEng ? "Dashboard" : "Mostrador"},
+    {4,isEng ? "Next" : "Próximo"}
+};
+
+Option seats[QUANT_SEATS] = {
+    {1,isEng ? "Default" : "Originais"},
+    {2,isEng ? "Leather seats +200€" : "Bancos de couro +200€"},
+    {3,isEng ? "Alcantara Bucket seats +1000€" : "Bancos baquet de Alcantara +1000€"}
+};
+
+Option radio[QUANT_RADIO] = {
+   {1,isEng ? "Default" : "Original"},
+    {2,isEng ? "2DIN Radio +100€" : "2DIN Rádio +100€"},
+    {3,isEng ? "Android Auto/CarPlay +300€" : "Android Auto/CarPlay +300€"}
+};
+
+Option dashboard[QUANT_DASHBOARD] = {
+    {1, isEng ? "Default" : "Original"},
+    {2, isEng ? "Sport +1000€" : "Desportivo +1000€"}
+};
+
+Option extras[QUANT_OPT_EXTRAS] = {
+   {1,isEng ? "Bodykit" : "Kit de carroçaria"},
+    {2,isEng ? "Engine" : "Motor"},
+    {3,isEng ? "Next" : "Próximo"}
+};
+
+Option kit[QUANT_KIT] = {
+    {1,isEng ? "Default" : "Original"},
+    {2,isEng ? "Sport Package +1000€" : "Pacote desportivo +1000€"}
+};
+
+Option motor[QUANT_MOTOR] = {
+    {1,isEng ? "Default 1.6L Diesel" : "1.6L Diesel"},
+    {2,isEng ? "2.0L Turbo Petrol +2000€" : "2.0L Turbo Gasolina +2000€"},
+    {3,isEng ? "3.5L V8 Petrol +4000€" : "3.5L V8 Gasolina +4000€"}
 };
 
 
@@ -187,6 +243,7 @@ int main(void) {
     }
     }
    
+    //seletor do exterior
     while(1){
         system("cls");
        int selectExteriorOption = menu(isEng ? "Okay let's start with the exterior":"Okay vamos começar pelo exterior",exterior,QUANT_OPT_EXTERIOR); 
@@ -240,6 +297,50 @@ int main(void) {
 
     checkStock(newCar);
      _getch();
+ 
+     currentSelection = 0;
+      
+     //seletor do interior
+      while (1){
+        system("cls");
+      int selectInteriorOption = menu(isEng ? "Now let's move on to the interior":"Agora vamos passar para o interior",interior,QUANT_OPT_INTERIOR); 
+        system("cls");
+        switch (currentSelection)
+    {
+    case 0:       
+       int selectSeats = menu(isEng ? "Seat Selection":"Escolha os bancos",seats,QUANT_SEATS);
+        newCar.seats = seats[currentSelection];
+        currentSelection = 0;
+        break;
+    case 1:
+        currentSelection = 0;
+        int selectRadio = menu(isEng ? "Radio Selection":"Escolha o rádio",radio,QUANT_RADIO);
+        newCar.radio = radio[currentSelection];
+        currentSelection = 1;
+        break;
+    case 2:
+        currentSelection = 0;
+        int selectDashboard = menu(isEng ? "Dashboard Selection":"Escolha o mostrador",dashboard,QUANT_DASHBOARD);
+        newCar.dashboard = dashboard[currentSelection];
+        currentSelection = 2;
+        break;
+    
+    case 3:
+        break;
+    }
+
+    if(currentSelection == 3){
+        break;
+    }
+
+    }
+
+     printf("%s %s\n",isEng ? "Seats:":"Bancos:", newCar.seats.option);
+    printf("%s %s\n",isEng ? "Radio:":"Rádio:",newCar.radio.option);
+    printf("%s %s\n",isEng ? "Dashboard:":"Mostrador:",newCar.dashboard.option);
+    
+    c = _getch();
+
    
 
     return 0;
